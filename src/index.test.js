@@ -80,6 +80,14 @@ describe("capture", () => {
 			}, /test error/);
 		});
 
+		it("throw error in sync function", async () => {
+			await assert.rejects(async () => {
+				await captureAsync(() => {
+					throw new Error("sync test error");
+				});
+			}, /sync test error/);
+		});
+
 		it("do sync task in async capture", async () => {
 			const result = await captureAsync(() => {
 				console.log("hello from async");

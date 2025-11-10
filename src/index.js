@@ -114,10 +114,6 @@ export function captureSync(fn) {
  */
 export function captureAsync(fn) {
 	return new Promise((resolve, reject) => {
-		try {
-			capture(fn, (result, error) => (error ? reject(error) : resolve(result)), false);
-		} catch (error) {
-			reject(error);
-		}
+		capture(fn, (result, error) => (error ? reject(error) : resolve(result)), false);
 	});
 }
