@@ -41,8 +41,10 @@
         "typescript": "^5.9.3"
     },
     "keywords": [
-        "sql",
-        "sql-builder"
+        "stdout",
+        "stderror",
+        "stdio",
+		"capture"
     ],
     "homepage": "https://github.com/axetroy/capture-stdio.js#readme",
     "bugs": {
