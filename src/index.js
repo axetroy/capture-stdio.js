@@ -1,20 +1,33 @@
 /**
  *
- * @param {string} key - The environment variable key
- * @param {string | undefined} value - The value to set for the environment variable
+ * @param {Record<string, string>} keyValueMap
  * @returns {() => void} - Function to restore the old environment variable value
  */
-function hydrateEnvironmentVariables(key, value) {
-	const oldValue = process.env[key];
+function hydrateEnvironmentVariables(keyValueMap) {
+	const restoreMap = new Map();
 
-	process.env[key] = value;
+	for (const [key, value] of Object.entries(keyValueMap)) {
+		const oldValue = process.env[key];
 
-	// Return a function to restore the old value
-	return () => {
-		if (oldValue === undefined) {
+		if (value === undefined) {
 			delete process.env[key];
 		} else {
-			process.env[key] = oldValue;
+			process.env[key] = value;
+		}
+
+		restoreMap.set(key, () => {
+			if (oldValue === undefined) {
+				delete process.env[key];
+			} else {
+				process.env[key] = oldValue;
+			}
+		});
+	}
+
+	// Return a function to restore all old values
+	return () => {
+		for (const restore of restoreMap.values()) {
+			restore();
 		}
 	};
 }
@@ -36,8 +49,8 @@ function capture(fn, callback, { echo = true, noColor = true } = {}, synchronous
 
 	const originalStdoutWrite = process.stdout.write;
 	const originalStderrWrite = process.stderr.write;
-	const restore_NODE_DISABLE_COLORS = noColor ? hydrateEnvironmentVariables("NODE_DISABLE_COLORS", "1") : noop;
-	const restore_FORCE_COLOR = noColor ? hydrateEnvironmentVariables("FORCE_COLOR", undefined) : noop;
+
+	const restoreColor = noColor ? hydrateEnvironmentVariables({ NODE_DISABLE_COLORS: "1", FORCE_COLOR: undefined, COLOR: "0" }) : noop;
 
 	process.stdout.write = (chunk) => {
 		stdout += chunk;
@@ -54,8 +67,7 @@ function capture(fn, callback, { echo = true, noColor = true } = {}, synchronous
 		process.stdout.write = originalStdoutWrite;
 		process.stderr.write = originalStderrWrite;
 
-		restore_NODE_DISABLE_COLORS();
-		restore_FORCE_COLOR();
+		restoreColor();
 	};
 
 	if (synchronous === true) {

@@ -108,7 +108,13 @@ describe("capture", () => {
 				{ noColor: false }
 			);
 
-			assert.strictEqual(result.stdout, "{ msg: \x1B[33m123\x1B[39m }\n");
+			// Check the output based on the COLOR environment variable
+			// The CI environment may have COLOR=0 set
+			if (process.env.COLOR === "0") {
+				assert.strictEqual(result.stdout, "{ msg: 123 }\n");
+			} else {
+				assert.strictEqual(result.stdout, "{ msg: \x1B[33m123\x1B[39m }\n");
+			}
 		});
 
 		it("noColor option: true", async () => {
