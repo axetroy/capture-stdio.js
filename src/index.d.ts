@@ -7,14 +7,21 @@ export interface CaptureResult {
 	combined: string;
 }
 
+export interface CaptureOptions {
+	/** Whether to echo the captured output to the original streams. Default is false. */
+	echo?: boolean;
+	/** Whether to disable colors in the captured output. Default is true. */
+	noColor?: boolean;
+}
+
 /**
  * Capture the standard output and error of a synchronous function.
  * @param fn
  */
-export function captureSync(fn: () => void): CaptureResult;
+export function captureSync(fn: () => void, options?: CaptureOptions): CaptureResult;
 
 /**
  * Capture the standard output and error of an asynchronous function.
  * @param fn
  */
-export function captureAsync(fn: () => Promise<void> | void): Promise<CaptureResult>;
+export function captureAsync(fn: () => Promise<void> | void, options?: CaptureOptions): Promise<CaptureResult>;

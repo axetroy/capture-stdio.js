@@ -98,4 +98,36 @@ describe("capture", () => {
 			assert.strictEqual(result.combined, "hello from async\n");
 		});
 	});
+
+	describe("options - noColor", () => {
+		it("noColor option: false", async () => {
+			const result = await captureAsync(
+				() => {
+					console.log({ msg: 123 });
+				},
+				{ noColor: false }
+			);
+
+			assert.strictEqual(result.stdout, "{ msg: \x1B[33m123\x1B[39m }\n");
+		});
+
+		it("noColor option: true", async () => {
+			const result = await captureAsync(
+				() => {
+					console.log({ msg: 123 });
+				},
+				{ noColor: true }
+			);
+
+			assert.strictEqual(result.stdout, "{ msg: 123 }\n");
+		});
+
+		it("noColor option with defaults", async () => {
+			const result = await captureAsync(() => {
+				console.log({ msg: 123 });
+			});
+
+			assert.strictEqual(result.stdout, "{ msg: 123 }\n");
+		});
+	});
 });

@@ -4,7 +4,7 @@
  * @param {string | undefined} value - The value to set for the environment variable
  * @returns {() => void} - Function to restore the old environment variable value
  */
-function hydrationEnv(key, value) {
+function hydrateEnvironmentVariables(key, value) {
 	const oldValue = process.env[key];
 
 	process.env[key] = value;
@@ -19,30 +19,35 @@ function hydrationEnv(key, value) {
 	};
 }
 
+const noop = () => {};
+
 /**
  * Spies on stdout and stderr during the execution of the provided function.
  * @param {Function} fn
  * @param {SpyStdioCallback} callback
+ * @param {object} [options]
  * @param {boolean} [synchronous=true]
  * @returns
  */
-function capture(fn, callback, synchronous) {
+function capture(fn, callback, { echo = false, noColor = true } = {}, synchronous = true) {
 	let stdout = "";
 	let stderr = "";
 	let combined = "";
 
 	const originalStdoutWrite = process.stdout.write;
 	const originalStderrWrite = process.stderr.write;
-	const restore_NODE_DISABLE_COLORS = hydrationEnv("NODE_DISABLE_COLORS", "1");
-	const restore_FORCE_COLOR = hydrationEnv("FORCE_COLOR", undefined);
+	const restore_NODE_DISABLE_COLORS = noColor ? hydrateEnvironmentVariables("NODE_DISABLE_COLORS", "1") : noop;
+	const restore_FORCE_COLOR = noColor ? hydrateEnvironmentVariables("FORCE_COLOR", undefined) : noop;
 
 	process.stdout.write = (chunk) => {
 		stdout += chunk;
 		combined += chunk;
+		echo && originalStdoutWrite.call(process.stdout, chunk);
 	};
 	process.stderr.write = (chunk) => {
 		stderr += chunk;
 		combined += chunk;
+		echo && originalStderrWrite.call(process.stderr, chunk);
 	};
 
 	const restore = () => {
@@ -93,7 +98,7 @@ function capture(fn, callback, synchronous) {
  * @param {Function} fn
  * @returns {SpyStdioResult}
  */
-export function captureSync(fn) {
+export function captureSync(fn, options) {
 	let result;
 
 	capture(
@@ -101,6 +106,7 @@ export function captureSync(fn) {
 		(result_) => {
 			result = result_;
 		},
+		options,
 		true
 	);
 
@@ -112,8 +118,8 @@ export function captureSync(fn) {
  * @param {Function} fn
  * @returns {Promise<SpyStdioResult>}
  */
-export function captureAsync(fn) {
+export function captureAsync(fn, options) {
 	return new Promise((resolve, reject) => {
-		capture(fn, (result, error) => (error ? reject(error) : resolve(result)), false);
+		capture(fn, (result, error) => (error ? reject(error) : resolve(result)), options, false);
 	});
 }
