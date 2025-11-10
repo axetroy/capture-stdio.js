@@ -29,6 +29,7 @@ function hydrateEnvironmentVariables(keyValueMap) {
 		for (const restore of restoreMap.values()) {
 			restore();
 		}
+		restoreMap.clear();
 	};
 }
 
