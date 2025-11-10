@@ -1,6 +1,6 @@
 {
     "name": "capture-stdio.js",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "private": false,
     "description": "A utility to capture standard output and error streams in Node.js applications.",
     "sideEffects": false,
