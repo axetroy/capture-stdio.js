@@ -1,6 +1,6 @@
 {
     "name": "capture-stdio.js",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "private": false,
     "description": "A utility to capture standard output and error streams in Node.js applications.",
     "sideEffects": false,
@@ -44,7 +44,7 @@
         "stdout",
         "stderror",
         "stdio",
-		"capture"
+        "capture"
     ],
     "homepage": "https://github.com/axetroy/capture-stdio.js#readme",
     "bugs": {
