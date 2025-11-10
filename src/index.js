@@ -29,7 +29,7 @@ const noop = () => {};
  * @param {boolean} [synchronous=true]
  * @returns
  */
-function capture(fn, callback, { echo = false, noColor = true } = {}, synchronous = true) {
+function capture(fn, callback, { echo = true, noColor = true } = {}, synchronous = true) {
 	let stdout = "";
 	let stderr = "";
 	let combined = "";

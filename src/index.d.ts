@@ -8,7 +8,7 @@ export interface CaptureResult {
 }
 
 export interface CaptureOptions {
-	/** Whether to echo the captured output to the original streams. Default is false. */
+	/** Whether to echo the captured output to the original streams. Default is true. */
 	echo?: boolean;
 	/** Whether to disable colors in the captured output. Default is true. */
 	noColor?: boolean;
