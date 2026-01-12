@@ -65,6 +65,7 @@ import { captureSync, captureAsync, CaptureResult, CaptureOptions } from "captur
 const result: CaptureResult = captureSync(() => {
 	console.log("Hello, TypeScript!");
 });
+console.log(result.stdout); // => "Hello, TypeScript!\n"
 
 const options: CaptureOptions = {
 	echo: false,
@@ -74,6 +75,7 @@ const options: CaptureOptions = {
 const asyncResult: CaptureResult = await captureAsync(async () => {
 	console.log("Async TypeScript!");
 }, options);
+console.log(asyncResult.stdout); // => "Async TypeScript!\n"
 ```
 
 ### Using the Combined Output
